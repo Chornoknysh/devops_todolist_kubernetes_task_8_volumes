@@ -10,5 +10,4 @@ spec:
   persistentVolumeReclaimPolicy: Delete
   storageClassName: standard
   hostPath:
-    path: /mnt/data/todoapp
-    type: DirectoryOrCreate
+    path: /tmp/todoapp-data
