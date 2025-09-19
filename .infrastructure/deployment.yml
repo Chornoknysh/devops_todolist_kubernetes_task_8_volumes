@@ -27,17 +27,6 @@ spec:
           limits:
             memory: "256Mi"
             cpu: "150m"
-        env:
-        - name: PYTHONUNBUFFERED
-          valueFrom:
-            configMapKeyRef:
-              name: app-config
-              key: PYTHONUNBUFFERED
-        - name: SECRET_KEY
-          valueFrom:
-            secretKeyRef:
-              name: app-secret
-              key: SECRET_KEY
         ports:
         - containerPort: 8080
         livenessProbe:
@@ -52,3 +41,24 @@ spec:
             port: 8080
           initialDelaySeconds: 5
           periodSeconds: 5
+        volumeMounts:
+          - name: todo-storage
+            mountPath: /app/data
+          - name: config-volume
+            mountPath: /app/configs
+            readOnly: true
+          - name: secret-volume
+            mountPath: /app/secrets
+            readOnly: true
+      volumes:
+        - name: todo-storage
+          persistentVolumeClaim:
+            claimName: todo-pvc
+        - name: config-volume
+          configMap:
+            name: app-config
+            defaultMode: 0444
+        - name: secret-volume
+          secret:
+            secretName: app-secret
+            defaultMode: 0400
